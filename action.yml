@@ -7,11 +7,21 @@ inputs:
     type: string
     required: false
     default: ''
+  is-sub-path:
+    description: Whether the project is a sub-path
+    type: boolean
+    required: false
+    default: false
   package-manager:
     description: The package manager which is used to manager dependencies
     type: string
     required: false
     default: 'pnpm'
+  package-manager-version:
+    description: The version of package manager to use
+    type: string
+    required: false
+    default: '8'
   lock-file:
     description: The lock file which is used to manage dependencies
     type: string
@@ -58,60 +68,80 @@ runs:
   steps:
     - name: Set Node package manager
       env:
-        INPUT_PACKAGE_MANAGER: "${{ inputs.package-manager }}"
-      run: echo "NODE_PACKAGE_MANAGER=${INPUT_PACKAGE_MANAGER}" >> "$GITHUB_ENV"
+        NODE_PACKAGE_MANAGER: "${{ inputs.package-manager }}"
+      run: echo "NODE_PACKAGE_MANAGER=${NODE_PACKAGE_MANAGER}" >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Set working directory
+      env:
+        WORKING_DIR: "${{ inputs.project-path }}"
+      run: echo "WORKING_DIR=${WORKING_DIR}" >> "$GITHUB_ENV"
       shell: bash
 
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Change to project directory
-      run: cd "${{ github.action_path }}/${{ inputs.project-path }}"
-      shell: bash
+    - name: Setup pnpm
+      if: env.NODE_PACKAGE_MANAGER == 'pnpm'
+      uses: pnpm/action-setup@v2
+      with:
+        version: "${{ inputs.package-manager-version }}"
+        run_install: |
+          - cwd: "${{ env.WORKING_DIR }}"
+            args: [--frozen-lockfile]
 
     - name: Set up Node
+      if: inputs.is-sub-path == 'false'
       uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: ${{ env.NODE_PACKAGE_MANAGER }}
-        cache-dependency-path: "${{ inputs.lock-file }}"
+
+    - name: Set up Node sub path
+      if: inputs.is-sub-path == 'true'
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: ${{ env.NODE_PACKAGE_MANAGER }}
+        cache-dependency-path: "${{ env.WORKING_DIR }}/${{ inputs.lock-file }}"
 
     - name: Install dependencies
-      run: ${NODE_PACKAGE_MANAGER} install
+      if: env.NODE_PACKAGE_MANAGER != 'pnpm'
+      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} install
       shell: bash
 
     - name: Lint code
-      if: ${{ !inputs.skip-lint }}
+      if: inputs.skip-lint == 'false'
       env:
         LINT_SCRIPT: "${{ inputs.lint-script }}"
-      run: ${PACKAGE_MANAGER} run ${LINT_SCRIPT}
+      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} run ${LINT_SCRIPT}
       shell: bash
 
     - name: Skip running lint
-      if: ${{ inputs.skip-lint }}
+      if: inputs.skip-lint == 'true'
       run: echo "Skipped running lint"
       shell: bash
 
     - name: Build
-      if: ${{ !inputs.skip-build }}
+      if: inputs.skip-build == 'false'
       env:
         BUILD_SCRIPT: "${{ inputs.build-script }}"
-      run: ${PACKAGE_MANAGER} run ${BUILD_SCRIPT}
+      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} run ${BUILD_SCRIPT}
       shell: bash
 
     - name: Skip building
-      if: ${{ inputs.skip-build }}
+      if: inputs.skip-build == 'true'
       run: echo "Skipped building"
       shell: bash
 
     - name: Test
-      if: ${{ !inputs.skip-test }}
+      if: inputs.skip-test  == 'false'
       env:
         TEST_SCRIPT: "${{ inputs.test-script }}"
-      run: ${PACKAGE_MANAGER} run ${TEST_SCRIPT}
+      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} run ${TEST_SCRIPT}
       shell: bash
 
     - name: Skip testing
-      if: ${{ inputs.skip-test }}
+      if: inputs.skip-test == 'true'
       run: echo "Skipped testing"
       shell: bash
