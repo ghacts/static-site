@@ -1,0 +1,117 @@
+name: Go
+description: GitHub Actions for building and testing static site projects
+
+inputs:
+  project-path:
+    description: The path to the project to check
+    type: string
+    required: false
+    default: ''
+  package-manager:
+    description: The package manager which is used to manager dependencies
+    type: string
+    required: false
+    default: 'pnpm'
+  lock-file:
+    description: The lock file which is used to manage dependencies
+    type: string
+    required: false
+    default: 'pnpm-lock.yaml'
+  node-version:
+    description: The version of Node.js to use
+    type: string
+    required: false
+    default: 'latest'
+  lint-script:
+    description: The script name to lint code
+    type: string
+    required: false
+    default: lint
+  build-script:
+    description: The script name to build the project
+    type: string
+    required: false
+    default: build
+  test-script:
+    description: The script name to run test cases
+    type: string
+    required: false
+    default: test
+  skip-lint:
+    description: Skip the lint step
+    type: boolean
+    required: false
+    default: false
+  skip-build:
+    description: Skip the build step
+    type: boolean
+    required: false
+    default: false
+  skip-test:
+    description: Skip the test step
+    type: boolean
+    required: false
+    default: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Node package manager
+      env:
+        INPUT_PACKAGE_MANAGER: "${{ inputs.package-manager }}"
+      run: echo "NODE_PACKAGE_MANAGER=${INPUT_PACKAGE_MANAGER}" >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Change to project directory
+      run: cd "${{ github.action_path }}/${{ inputs.project-path }}"
+      shell: bash
+
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: ${{ env.NODE_PACKAGE_MANAGER }}
+        cache-dependency-path: "${{ inputs.lock-file }}"
+
+    - name: Install dependencies
+      run: ${NODE_PACKAGE_MANAGER} install
+      shell: bash
+
+    - name: Lint code
+      if: ${{ !inputs.skip-lint }}
+      env:
+        LINT_SCRIPT: "${{ inputs.lint-script }}"
+      run: ${PACKAGE_MANAGER} run ${LINT_SCRIPT}
+      shell: bash
+
+    - name: Skip running lint
+      if: ${{ inputs.skip-lint }}
+      run: echo "Skipped running lint"
+      shell: bash
+
+    - name: Build
+      if: ${{ !inputs.skip-build }}
+      env:
+        BUILD_SCRIPT: "${{ inputs.build-script }}"
+      run: ${PACKAGE_MANAGER} run ${BUILD_SCRIPT}
+      shell: bash
+
+    - name: Skip building
+      if: ${{ inputs.skip-build }}
+      run: echo "Skipped building"
+      shell: bash
+
+    - name: Test
+      if: ${{ !inputs.skip-test }}
+      env:
+        TEST_SCRIPT: "${{ inputs.test-script }}"
+      run: ${PACKAGE_MANAGER} run ${TEST_SCRIPT}
+      shell: bash
+
+    - name: Skip testing
+      if: ${{ inputs.skip-test }}
+      run: echo "Skipped testing"
+      shell: bash
