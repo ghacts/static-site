@@ -62,6 +62,16 @@ inputs:
     type: boolean
     required: false
     default: false
+  artifact-name:
+    description: The name of the artifact to upload
+    type: string
+    required: false
+    default: 'dist'
+  output-dir:
+    description: The path to the output directory
+    type: string
+    required: false
+    default: 'dist/'
 
 runs:
   using: "composite"
@@ -128,6 +138,13 @@ runs:
         BUILD_SCRIPT: "${{ inputs.build-script }}"
       run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} run ${BUILD_SCRIPT}
       shell: bash
+
+    - name: Upload artifact
+      if: inputs.skip-build == 'false'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: "${{ env.WORKING_DIR }}/${{ inputs.output-dir }}"
 
     - name: Skip building
       if: inputs.skip-build == 'true'

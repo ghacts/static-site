@@ -34,6 +34,7 @@ jobs:
         env:
           ASTRO_BASE_URL: 'http://localhost:3000/'
         with:
-          project-path: tests/astro/
+          project-path: tests/astro
           is-sub-path: true
           node-version: ${{ matrix.node-version }}
+          artifact-name: "dist-${{ matrix.os }}-${{ matrix.node-version }}"
