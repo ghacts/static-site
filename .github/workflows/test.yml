@@ -37,6 +37,9 @@ jobs:
           ref: main
           path: tests/astro
 
+      - run: ls -la tests/astro
+        shell: bash
+
       - name: Test astro project
         uses: ./
         env:
