@@ -2,6 +2,7 @@
 name: Test
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - v*
@@ -33,6 +34,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: 'ghacts/sample-astro-pnpm'
+          ref: main
           path: tests/astro
 
       - name: Test astro project
