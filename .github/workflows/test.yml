@@ -37,13 +37,11 @@ jobs:
           ref: main
           path: tests/astro
 
-      - run: ls -la tests/astro
-        shell: bash
-
       - name: Test astro project
         uses: ./
         env:
           ASTRO_BASE_URL: 'http://localhost:3000/'
+          SKIP_CHECKOUT: true
         with:
           project-path: tests/astro
           is-sub-path: true

@@ -89,6 +89,7 @@ runs:
       shell: bash
 
     - name: Checkout
+      if: github.repository != 'ghacts/static-site' || env.SKIP_CHECKOUT != 'true'
       uses: actions/checkout@v3
 
     - name: Setup pnpm
