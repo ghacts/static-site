@@ -29,6 +29,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Checkout project sample-astro-pnpm
+        uses: actions/checkout@v3
+        with:
+          repository: 'ghacts/sample-astro-pnpm'
+          path: tests/astro
+
       - name: Test astro project
         uses: ./
         env:
@@ -37,4 +43,4 @@ jobs:
           project-path: tests/astro
           is-sub-path: true
           node-version: ${{ matrix.node-version }}
-          artifact-name: "dist-${{ matrix.os }}-${{ matrix.node-version }}"
+          artifact-name: "dist-astro-pnpm-${{ matrix.os }}-${{ matrix.node-version }}"
