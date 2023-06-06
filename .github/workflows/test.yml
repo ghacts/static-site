@@ -12,6 +12,9 @@ on:
 permissions:
   contents: read
 
+env:
+  SKIP_CHECKOUT: true
+
 jobs:
   test:
     name: Test
@@ -28,22 +31,47 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
+        id: checkout
         uses: actions/checkout@v3
 
+      - name: Checkout project sample-astro-npm
+        id: checkout-astro-npm
+        if: always() && steps.checkout.outcome == 'success'
+        uses: actions/checkout@v3
+        with:
+          repository: 'ghacts/sample-astro-npm'
+          ref: main
+          path: tests/astro-npm
+
+      - name: Test project astro-npm
+        if: always() && steps.checkout.outcome == 'success' && steps.checkout-astro-npm.outcome == 'success'
+        uses: ./
+        env:
+          ASTRO_BASE_URL: 'http://localhost:3000/'
+        with:
+          project-path: tests/astro-npm
+          is-sub-path: true
+          node-version: ${{ matrix.node-version }}
+          package-manager: 'npm'
+          lock-file: 'package-lock.json'
+          artifact-name: "dist-astro-npm-${{ matrix.os }}-${{ matrix.node-version }}"
+
       - name: Checkout project sample-astro-pnpm
+        id: checkout-astro-pnpm
+        if: always() && steps.checkout.outcome == 'success'
         uses: actions/checkout@v3
         with:
           repository: 'ghacts/sample-astro-pnpm'
           ref: main
-          path: tests/astro
+          path: tests/astro-pnpm
 
-      - name: Test astro project
+      - name: Test project astro-pnpm
+        if: always() && steps.checkout.outcome == 'success' && steps.checkout-astro-pnpm.outcome == 'success'
         uses: ./
         env:
           ASTRO_BASE_URL: 'http://localhost:3000/'
-          SKIP_CHECKOUT: true
         with:
-          project-path: tests/astro
+          project-path: tests/astro-pnpm
           is-sub-path: true
           node-version: ${{ matrix.node-version }}
           artifact-name: "dist-astro-pnpm-${{ matrix.os }}-${{ matrix.node-version }}"
