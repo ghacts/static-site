@@ -83,9 +83,19 @@ runs:
       shell: bash
 
     - name: Set working directory
+      if: inputs.project-path == ''
+      run: echo "WORKING_DIR=./" >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Set working directory
+      if: inputs.project-path != ''
       env:
         WORKING_DIR: "${{ inputs.project-path }}"
-      run: echo "WORKING_DIR=${WORKING_DIR}" >> "$GITHUB_ENV"
+      run: |
+        {
+          echo "WORKING_DIR=${WORKING_DIR}"
+          echo "PNPM_WORKING_DIR=${WORKING_DIR}"
+        } >> "$GITHUB_ENV"
       shell: bash
 
     - name: Checkout
@@ -93,7 +103,7 @@ runs:
       uses: actions/checkout@v3
 
     - name: Setup pnpm
-      if: env.NODE_PACKAGE_MANAGER == 'pnpm' && env.WORKING_DIR == ''
+      if: env.NODE_PACKAGE_MANAGER == 'pnpm' && env.PNPM_WORKING_DIR == ''
       uses: pnpm/action-setup@v2
       with:
         version: "${{ inputs.package-manager-version }}"
@@ -101,7 +111,7 @@ runs:
           - args: [--frozen-lockfile]
 
     - name: Setup pnpm
-      if: env.NODE_PACKAGE_MANAGER == 'pnpm' && env.WORKING_DIR != ''
+      if: env.NODE_PACKAGE_MANAGER == 'pnpm' && env.PNPM_WORKING_DIR != ''
       uses: pnpm/action-setup@v2
       with:
         version: "${{ inputs.package-manager-version }}"
