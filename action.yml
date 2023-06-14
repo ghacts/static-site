@@ -1,4 +1,4 @@
-name: Static site
+name: Build static site
 description: GitHub Actions for building and testing static site projects
 
 inputs:
