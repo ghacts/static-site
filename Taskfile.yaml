@@ -1,0 +1,28 @@
+version: "3"
+
+includes:
+  git: ./.taskfiles/task_git.yaml
+  release: ./.taskfiles/task_release.yaml
+  action: ./.taskfiles/task_action.yaml
+
+env:
+  VERSION_TAG_PREFIX: v
+  RELEASE_BASE_BRANCH: main
+  RELEASE_BRANCH_PREFIX: release/
+
+tasks:
+  prepare:
+    desc: Install tools
+    cmds:
+      - task: "release:prepare"
+      - task: "action:prepare"
+
+  prerelease:
+    desc: Prepare release
+    vars:
+      VERSION: "{{.CLI_ARGS}}"
+    cmds:
+      - echo "Preparing release for version {{.VERSION}}"
+      - git switch -c ${RELEASE_BRANCH_PREFIX}{{.VERSION}} ${RELEASE_BASE_BRANCH}
+      - task: "action:doc"
+      - task release:create -- {{.VERSION}}

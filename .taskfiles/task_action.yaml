@@ -1,0 +1,16 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  prepare:
+    desc: Install tools
+    cmds:
+      - pnpm add -g action-docs
+      - brew install deno
+
+  doc:
+    desc: Generate action documentation
+    cmds:
+      - action-docs -a action.yml -t 2 -l "LF" -u --no-banner
+      - deno fmt README.md
