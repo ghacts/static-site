@@ -181,3 +181,7 @@ runs:
       if: inputs.skip-test == 'true'
       run: echo "Skipped testing"
       shell: bash
+
+branding:
+  icon: 'box'
+  color: 'green'
