@@ -136,14 +136,16 @@ runs:
 
     - name: Install dependencies
       if: env.NODE_PACKAGE_MANAGER != 'pnpm'
-      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} install
+      working-directory: ${{ env.WORKING_DIR }}
+      run: ${NODE_PACKAGE_MANAGER} install
       shell: bash
 
     - name: Lint code
       if: inputs.skip-lint == 'false'
       env:
         LINT_SCRIPT: "${{ inputs.lint-script }}"
-      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} run ${LINT_SCRIPT}
+      working-directory: ${{ env.WORKING_DIR }}
+      run: ${NODE_PACKAGE_MANAGER} run ${LINT_SCRIPT}
       shell: bash
 
     - name: Skip running lint
@@ -155,11 +157,12 @@ runs:
       if: inputs.skip-build == 'false'
       env:
         BUILD_SCRIPT: "${{ inputs.build-script }}"
-      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} run ${BUILD_SCRIPT}
+      working-directory: ${{ env.WORKING_DIR }}
+      run: ${NODE_PACKAGE_MANAGER} run ${BUILD_SCRIPT}
       shell: bash
 
     - name: Upload artifact
-      if: inputs.skip-build == 'false'
+      if: inputs.skip-build == 'false' && success()
       uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.artifact-name }}
@@ -174,7 +177,8 @@ runs:
       if: inputs.skip-test  == 'false'
       env:
         TEST_SCRIPT: "${{ inputs.test-script }}"
-      run: cd ${WORKING_DIR} && ${NODE_PACKAGE_MANAGER} run ${TEST_SCRIPT}
+      working-directory: ${{ env.WORKING_DIR }}
+      run: ${NODE_PACKAGE_MANAGER} run ${TEST_SCRIPT}
       shell: bash
 
     - name: Skip testing
