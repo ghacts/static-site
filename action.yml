@@ -9,7 +9,7 @@ inputs:
   is-sub-path:
     description: Whether the project is a sub-path
     required: false
-    default: false
+    default: 'false'
   package-manager:
     description: The package manager which is used to manager dependencies
     required: false
@@ -41,15 +41,15 @@ inputs:
   skip-lint:
     description: Skip the lint step
     required: false
-    default: false
+    default: 'false'
   skip-build:
     description: Skip the build step
     required: false
-    default: false
+    default: 'false'
   skip-test:
     description: Skip the test step
     required: false
-    default: false
+    default: 'false'
   artifact-name:
     description: The name of the artifact to upload
     required: false
