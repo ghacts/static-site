@@ -90,7 +90,7 @@ runs:
 
     - name: Setup pnpm
       if: env.NODE_PACKAGE_MANAGER == 'pnpm' && env.PNPM_WORKING_DIR == ''
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v3
       with:
         version: "${{ inputs.package-manager-version }}"
         run_install: |
@@ -98,7 +98,7 @@ runs:
 
     - name: Setup pnpm
       if: env.NODE_PACKAGE_MANAGER == 'pnpm' && env.PNPM_WORKING_DIR != ''
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v3
       with:
         version: "${{ inputs.package-manager-version }}"
         run_install: |
