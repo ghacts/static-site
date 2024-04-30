@@ -86,7 +86,7 @@ runs:
 
     - name: Checkout
       if: github.repository != 'ghacts/static-site' || env.SKIP_CHECKOUT != 'true'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup pnpm
       if: env.NODE_PACKAGE_MANAGER == 'pnpm' && env.PNPM_WORKING_DIR == ''

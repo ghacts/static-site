@@ -32,12 +32,12 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout project sample-astro-npm
         id: checkout-astro-npm
         if: always() && steps.checkout.outcome == 'success'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'ghacts/sample-astro-npm'
           ref: main
@@ -59,7 +59,7 @@ jobs:
       - name: Checkout project sample-astro-pnpm
         id: checkout-astro-pnpm
         if: always() && steps.checkout.outcome == 'success'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'ghacts/sample-astro-pnpm'
           ref: main
