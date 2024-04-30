@@ -149,7 +149,7 @@ runs:
 
     - name: Upload artifact
       if: inputs.skip-build == 'false' && success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
         path: "${{ env.WORKING_DIR }}/${{ inputs.output-dir }}"
