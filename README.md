@@ -19,7 +19,7 @@ GitHub Actions for building and testing static site projects
 | project-path            | The path to the project to check                          | `false`  |                |
 | is-sub-path             | Whether the project is a sub-path                         | `false`  | false          |
 | package-manager         | The package manager which is used to manager dependencies | `false`  | pnpm           |
-| package-manager-version | The version of package manager to use                     | `false`  | 8              |
+| package-manager-version | The version of package manager to use                     | `false`  | latest         |
 | lock-file               | The lock file which is used to manage dependencies        | `false`  | pnpm-lock.yaml |
 | node-version            | The version of Node.js to use                             | `false`  | latest         |
 | lint-script             | The script name to lint code                              | `false`  | lint           |

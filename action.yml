@@ -17,7 +17,7 @@ inputs:
   package-manager-version:
     description: The version of package manager to use
     required: false
-    default: '8'
+    default: 'latest'
   lock-file:
     description: The lock file which is used to manage dependencies
     required: false
