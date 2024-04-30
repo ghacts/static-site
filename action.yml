@@ -4,72 +4,58 @@ description: GitHub Actions for building and testing static site projects
 inputs:
   project-path:
     description: The path to the project to check
-    type: string
     required: false
     default: ''
   is-sub-path:
     description: Whether the project is a sub-path
-    type: boolean
     required: false
     default: false
   package-manager:
     description: The package manager which is used to manager dependencies
-    type: string
     required: false
     default: 'pnpm'
   package-manager-version:
     description: The version of package manager to use
-    type: string
     required: false
     default: '8'
   lock-file:
     description: The lock file which is used to manage dependencies
-    type: string
     required: false
     default: 'pnpm-lock.yaml'
   node-version:
     description: The version of Node.js to use
-    type: string
     required: false
     default: 'latest'
   lint-script:
     description: The script name to lint code
-    type: string
     required: false
     default: lint
   build-script:
     description: The script name to build the project
-    type: string
     required: false
     default: build
   test-script:
     description: The script name to run test cases
-    type: string
     required: false
     default: test
   skip-lint:
     description: Skip the lint step
-    type: boolean
     required: false
     default: false
   skip-build:
     description: Skip the build step
-    type: boolean
     required: false
     default: false
   skip-test:
     description: Skip the test step
-    type: boolean
     required: false
     default: false
   artifact-name:
     description: The name of the artifact to upload
-    type: string
     required: false
     default: 'dist'
   output-dir:
     description: The path to the output directory
-    type: string
     required: false
     default: 'dist/'
 
