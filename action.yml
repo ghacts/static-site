@@ -5,27 +5,27 @@ inputs:
   project-path:
     description: The path to the project to check
     required: false
-    default: ''
+    default: ""
   is-sub-path:
     description: Whether the project is a sub-path
     required: false
-    default: 'false'
+    default: "false"
   package-manager:
     description: The package manager which is used to manager dependencies
     required: false
-    default: 'pnpm'
+    default: "pnpm"
   package-manager-version:
     description: The version of package manager to use
     required: false
-    default: 'latest'
+    default: "latest"
   lock-file:
     description: The lock file which is used to manage dependencies
     required: false
-    default: 'pnpm-lock.yaml'
+    default: "pnpm-lock.yaml"
   node-version:
     description: The version of Node.js to use
     required: false
-    default: 'latest'
+    default: "latest"
   lint-script:
     description: The script name to lint code
     required: false
@@ -41,23 +41,23 @@ inputs:
   skip-lint:
     description: Skip the lint step
     required: false
-    default: 'false'
+    default: "false"
   skip-build:
     description: Skip the build step
     required: false
-    default: 'false'
+    default: "false"
   skip-test:
     description: Skip the test step
     required: false
-    default: 'false'
+    default: "false"
   artifact-name:
     description: The name of the artifact to upload
     required: false
-    default: 'dist'
+    default: "dist"
   output-dir:
     description: The path to the output directory
     required: false
-    default: 'dist/'
+    default: "dist/"
 
 runs:
   using: "composite"
@@ -90,7 +90,7 @@ runs:
 
     - name: Install pnpm
       if: env.NODE_PACKAGE_MANAGER == 'pnpm'
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
       with:
         version: "${{ inputs.package-manager-version }}"
         run_install: false
@@ -182,5 +182,5 @@ runs:
       shell: bash
 
 branding:
-  icon: 'box'
-  color: 'green'
+  icon: "box"
+  color: "green"
